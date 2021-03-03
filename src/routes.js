@@ -15,8 +15,8 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Dashboard_geral from "views/Dashboard_geral.js";
-import Dashboard_RealTime from "views/Dashboard_RealTime.js";
+import DashboardGeral from "views/DashboardGeral.js";
+import DashboardRealTime from "views/DashboardRealTime.js";
 
 import Icons from "views/Icons.js";
 import Map from "views/Map.js";
@@ -32,7 +32,7 @@ var routes = [
     name: "Dashboard Real Time",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-chart-pie-36",
-    component: Dashboard_RealTime,
+    component: DashboardRealTime,
     layout: "/admin"
   },
   {
@@ -40,9 +40,9 @@ var routes = [
     name: "Corrida1",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-chart-pie-36",
-    component: Dashboard_geral,
+    component: DashboardGeral,
     layout: "/admin"
-  },
+  }
   // {
   //   path: "/icons",
   //   name: "Icons",
