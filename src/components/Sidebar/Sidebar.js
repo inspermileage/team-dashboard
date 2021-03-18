@@ -16,159 +16,194 @@
 
 */
 /*eslint-disable*/
-import React from "react";
-import { NavLink, Link } from "react-router-dom";
+import React from 'react';
+import { NavLink, Link } from 'react-router-dom';
 // nodejs library to set properties for components
-import { PropTypes } from "prop-types";
+import { PropTypes } from 'prop-types';
 
 // javascript plugin used to create scrollbars on windows
-import PerfectScrollbar from "perfect-scrollbar";
+import PerfectScrollbar from 'perfect-scrollbar';
 
 // reactstrap components
-import { Nav, NavLink as ReactstrapNavLink } from "reactstrap";
+import { Nav, NavLink as ReactstrapNavLink } from 'reactstrap';
+
+import axios from 'axios';
 
 var ps;
 
 class Sidebar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.activeRoute.bind(this);
-  }
-  // verifies if routeName is the one active (in browser input)
-  activeRoute(routeName) {
-    return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
-  }
-  componentDidMount() {
-    if (navigator.platform.indexOf("Win") > -1) {
-      ps = new PerfectScrollbar(this.refs.sidebar, {
-        suppressScrollX: true,
-        suppressScrollY: false
-      });
-    }
-  }
-  componentWillUnmount() {
-    if (navigator.platform.indexOf("Win") > -1) {
-      ps.destroy();
-    }
-  }
-  linkOnClick = () => {
-    document.documentElement.classList.remove("nav-open");
-  };
-  render() {
-    const { bgColor, routes, rtlActive, logo } = this.props;
-    let logoImg = null;
-    let logoText = null;
-    if (logo !== undefined) {
-      if (logo.outterLink !== undefined) {
-        logoImg = (
-          <a
-            href={logo.outterLink}
-            className="simple-text logo-mini"
-            target="_blank"
-            onClick={this.props.toggleSidebar}
-          >
-            <div className="logo-img">
-              <img src={logo.imgSrc} alt="react-logo" />
-            </div>
-          </a>
-        );
-        logoText = (
-          <a
-            href={logo.outterLink}
-            className="simple-text logo-normal"
-            target="_blank"
-            onClick={this.props.toggleSidebar}
-          >
-            {logo.text}
-          </a>
-        );
-      } else {
-        logoImg = (
-          <Link
-            to={logo.innerLink}
-            className="simple-text logo-mini"
-            onClick={this.props.toggleSidebar}
-          >
-            <div className="logo-img">
-              <img src={logo.imgSrc} alt="react-logo" />
-            </div>
-          </Link>
-        );
-        logoText = (
-          <Link
-            to={logo.innerLink}
-            className="simple-text logo-normal"
-            onClick={this.props.toggleSidebar}
-          >
-            {logo.text}
-          </Link>
-        );
-      }
-    }
-    return (
-      <div className="sidebar" data={bgColor}>
-        <div className="sidebar-wrapper" ref="sidebar">
-          {logoImg !== null || logoText !== null ? (
-            <div className="logo">
-              {logoImg}
-              {logoText}
-            </div>
-          ) : null}
-          <Nav>
-            {routes.map((prop, key) => {
-              if (prop.redirect) return null;
-              return (
-                <li
-                  className={
-                    this.activeRoute(prop.path) +
-                    (prop.pro ? " active-pro" : "")
-                  }
-                  key={key}
-                >
-                  <NavLink
-                    to={prop.layout + prop.path}
-                    className="nav-link"
-                    activeClassName="active"
-                    onClick={this.props.toggleSidebar}
-                  >
-                    <i className={prop.icon} />
-                    <p>{rtlActive ? prop.rtlName : prop.name}</p>
-                  </NavLink>
-                </li>
-              );
-            })}
-            
-          </Nav>
-        </div>
-      </div>
-    );
-  }
+	constructor(props) {
+		super(props);
+		this.state = { rounds: [] };
+		this.activeRoute.bind(this);
+		this.getRound = this.getRound.bind(this);
+		this.componentDidMount = this.componentDidMount.bind(this);
+	}
+	// verifies if routeName is the one active (in browser input)
+	activeRoute(routeName) {
+		return this.props.location.pathname.indexOf(routeName) > -1 ? 'active' : '';
+	}
+	componentDidMount() {
+		this.getRound();
+		// console.log(oi);
+
+		if (navigator.platform.indexOf('Win') > -1) {
+			console.log('componentDidMount');
+
+			ps = new PerfectScrollbar(this.refs.sidebar, {
+				suppressScrollX: true,
+				suppressScrollY: false
+			});
+		}
+	}
+	componentWillUnmount() {
+		if (navigator.platform.indexOf('Win') > -1) {
+			ps.destroy();
+		}
+	}
+	linkOnClick = () => {
+		document.documentElement.classList.remove('nav-open');
+	};
+	getRound = () => {
+		axios
+			.get('https://apirestmileage.herokuapp.com/api/round/')
+			.then((response) => {
+				console.log(response.data[0]);
+				this.setState({
+					rounds: response.data
+				});
+				//console.log("print da data")
+				// response.data.map((data,key)=> {
+				//   console.log(data.name);
+				// });
+				// console.log(response.data);
+				// return response.data;
+				return;
+			})
+			.catch(function(error) {
+				console.log(error);
+				console.log('Deu errado no getRoundInfo :(');
+			});
+	};
+
+	render() {
+		const { bgColor, routes, rtlActive, logo } = this.props;
+		let logoImg = null;
+		let logoText = null;
+		if (logo !== undefined) {
+			if (logo.outterLink !== undefined) {
+				logoImg = (
+					<a
+						href={logo.outterLink}
+						className="simple-text logo-mini"
+						target="_blank"
+						onClick={this.props.toggleSidebar}
+					>
+						<div className="logo-img">
+							<img src={logo.imgSrc} alt="react-logo" />
+						</div>
+					</a>
+				);
+				logoText = (
+					<a
+						href={logo.outterLink}
+						className="simple-text logo-normal"
+						target="_blank"
+						onClick={this.props.toggleSidebar}
+					>
+						{logo.text}
+					</a>
+				);
+			} else {
+				// #{this.props.toggleSidebar}
+				logoImg = (
+					<Link to={logo.innerLink} className="simple-text logo-mini" onClick={this.props.toggleSidebar}>
+						<div className="logo-img">
+							<img src={logo.imgSrc} alt="react-logo" />
+						</div>
+					</Link>
+				);
+				logoText = (
+					<Link to={logo.innerLink} className="simple-text logo-normal" onClick={this.props.toggleSidebar}>
+						{logo.text}
+					</Link>
+				);
+			}
+		}
+		return (
+			<div className="sidebar" data={bgColor}>
+				<div className="sidebar-wrapper" ref="sidebar">
+					{logoImg !== null || logoText !== null ? (
+						<div className="logo">
+							{logoImg}
+							{logoText}
+						</div>
+					) : null}
+					<Nav>
+						{routes.map((prop, key) => {
+							if (prop.redirect) return null;
+							return (
+								<li className={this.activeRoute(prop.path) + (prop.pro ? ' active-pro' : '')} key={key}>
+									<NavLink
+										to={prop.layout + prop.path}
+										className="nav-link"
+										activeClassName="active"
+										onClick={this.props.toggleSidebar}
+									>
+										<i className={prop.icon} />
+										<p>{rtlActive ? prop.rtlName : prop.name}</p>
+									</NavLink>
+								</li>
+							);
+						})}
+						{this.state.rounds.map((item, key) => {
+							return (
+								<div style={{ backgroundColor: '#235791' }}>
+									<li key={key}>
+										<NavLink
+											to={'/admin/corrida1'}
+											className="nav-link"
+											activeClassName="active"
+											onClick={this.props.toggleSidebar}
+										>
+											<i className="tim-icons icon-trophy" />
+											<p>{item.name ? item.name : 'nao tem'}</p>
+										</NavLink>
+									</li>
+								</div>
+							);
+						})}
+					</Nav>
+				</div>
+			</div>
+		);
+	}
 }
 
 Sidebar.defaultProps = {
-  rtlActive: false,
-  bgColor: "primary",
-  routes: [{}]
+	rtlActive: false,
+	bgColor: 'primary',
+	routes: [ {} ]
 };
 
 Sidebar.propTypes = {
-  // if true, then instead of the routes[i].name, routes[i].rtlName will be rendered
-  // insde the links of this component
-  rtlActive: PropTypes.bool,
-  bgColor: PropTypes.oneOf(["primary", "blue", "green"]),
-  routes: PropTypes.arrayOf(PropTypes.object),
-  logo: PropTypes.shape({
-    // innerLink is for links that will direct the user within the app
-    // it will be rendered as <Link to="...">...</Link> tag
-    innerLink: PropTypes.string,
-    // outterLink is for links that will direct the user outside the app
-    // it will be rendered as simple <a href="...">...</a> tag
-    outterLink: PropTypes.string,
-    // the text of the logo
-    text: PropTypes.node,
-    // the image src of the logo
-    imgSrc: PropTypes.string
-  })
+	// if true, then instead of the routes[i].name, routes[i].rtlName will be rendered
+	// insde the links of this component
+	rtlActive: PropTypes.bool,
+	bgColor: PropTypes.oneOf([ 'primary', 'blue', 'green' ]),
+	routes: PropTypes.arrayOf(PropTypes.object),
+	logo: PropTypes.shape({
+		// innerLink is for links that will direct the user within the app
+		// it will be rendered as <Link to="...">...</Link> tag
+		innerLink: PropTypes.string,
+		// outterLink is for links that will direct the user outside the app
+		// it will be rendered as simple <a href="...">...</a> tag
+		outterLink: PropTypes.string,
+		// the text of the logo
+		text: PropTypes.node,
+		// the image src of the logo
+		imgSrc: PropTypes.string
+	})
 };
 
 export default Sidebar;
