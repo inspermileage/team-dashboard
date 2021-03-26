@@ -20,8 +20,11 @@ import React from 'react';
 import classNames from 'classnames';
 // react plugin used to create charts
 import { Line, Bar } from 'react-chartjs-2';
-
+import  BarChart from 'variables/charts_bar.js'
+import  LineChart from 'variables/charts_line.js'
 import axios from 'axios';
+import toTimestamp from "function/totimestamp.js"
+import toMinutes from "function/tominutes.js"
 
 // reactstrap components
 import {
@@ -45,12 +48,13 @@ import {
 } from 'reactstrap';
 
 // core components
-import { chartExample1, chartExample2, chartExample3, chartExample4 } from 'variables/charts.js';
+import { chartExample1, chartExample2, chartExample3} from 'variables/charts.js';
 
 class Dashboard extends React.Component {
 	constructor(props) {
 		super(props);
 		console.log(props.location.aboutProps);
+		
 		this.getTelemetrybyRoundId = this.getTelemetrybyRoundId.bind(this); 
 		this.state = {
 			bigChartData: 'data1',
@@ -64,14 +68,20 @@ class Dashboard extends React.Component {
 			rpm: [],
 			battery:[],
 			avg_speed:[],
+			creation_time_timestamp:[],
+			race_time: 0,
 		};
 		this.componentDidMount = this.componentDidMount.bind(this);
+
+		
 	}
 	setBgChartData = (name) => {
 		this.setState({
 			bigChartData: name
 		});
 	};
+
+
 	
 
 	componentDidMount() {
@@ -84,6 +94,7 @@ class Dashboard extends React.Component {
 			.then((response) => {
 				console.log(response.data);
 				response.data.map((prop, key) => {
+					var timestamp = toTimestamp(prop.creation_time);
 					this.setState({
 						speed: [...this.state.speed,prop.speed],
 						telemetry_id: [...this.state.telemetry_id,prop.id],
@@ -93,13 +104,18 @@ class Dashboard extends React.Component {
 						energy_cons: [...this.state.energy_cons, prop.energy_cons],
 						rpm: [...this.state.rpm, prop.rpm],
 						battery:[...this.state.battery, prop.battery],
-						avg_speed: [...this.state.avg_speed, prop.avg_speed]
+						avg_speed: [...this.state.avg_speed, prop.avg_speed],
+						creation_time_timestamp: [...this.state.creation_time_timestamp,timestamp],
+					
+						
 					})
 				})
 				this.setState({
-					telemetry: response.data
+					telemetry: response.data,
+					race_time: toMinutes(this.state.creation_time_timestamp[this.state.creation_time_timestamp.length-1] - this.state.creation_time_timestamp[0])
 				});
 				console.log(this.state);
+				console.log(this.state.race_time);	
 				return;
 			})
 			.catch(function(error) {
@@ -216,30 +232,60 @@ class Dashboard extends React.Component {
 						<Col lg="4">
 							<Card className="card-chart">
 								<CardHeader>
-									<h5 className="card-category">Daily Sales</h5>
-									<CardTitle tag="h3">
+									<h5 className="card-category">Temperatura x Distância</h5>
+									{/* <CardTitle tag="h3">
 										<i className="tim-icons icon-delivery-fast text-primary" /> 3,500€
-									</CardTitle>
+									</CardTitle> */}
 								</CardHeader>
 								<CardBody>
 									<div className="chart-area">
-										<Bar data={chartExample3.data} options={chartExample3.options} />
+									<LineChart
+										data={this.state.engine_temp}
+										label={this.state.distance}
+										// title="Gabi"
+										color="#70CAD1"
+									/>
 									</div>
 								</CardBody>
 							</Card>
 						</Col>
 						<Col lg="4">
+						{/* <Bar
+							data={{
+							labels: this.props.distance,
+							datasets: this.props.energy_cons
+							}}
+							options={{
+							legend: {
+								display: false
+							},
+							scales: {
+								yAxes: [{
+								ticks: {
+									max: this.props.maxY,
+									min: 0,
+									stepSize: 3
+									}
+								}]
+								},
+								title: {
+								display: this.props.display,
+								text: this.props.title
+								}
+							}}
+						/> */}
+
 							<Card className="card-chart">
 								<CardHeader>
-									<h5 className="card-category">Completed Tasks</h5>
+									<h5 className="card-category">Tempo de Prova</h5>
 									<CardTitle tag="h3">
-										<i className="tim-icons icon-send text-success" /> 12,100K
+										<i className="tim-icons icon-send text-success" /> {this.state.race_time}
 									</CardTitle>
 								</CardHeader>
 								<CardBody>
-									<div className="chart-area">
+									{/* <div className="chart-area">
 										<Line data={chartExample4.data} options={chartExample4.options} />
-									</div>
+									</div> */}
 								</CardBody>
 							</Card>
 						</Col>
