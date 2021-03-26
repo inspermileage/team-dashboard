@@ -42,6 +42,7 @@ import {
   UncontrolledTooltip
 } from "reactstrap";
 
+
 // core components
 import {
   chartExample1,
@@ -49,6 +50,7 @@ import {
   chartExample3,
   chartExample4
 } from "variables/charts.js";
+
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -62,6 +64,8 @@ class Dashboard extends React.Component {
       bigChartData: name
     });
   };
+
+
   render() {
     return (
       <>

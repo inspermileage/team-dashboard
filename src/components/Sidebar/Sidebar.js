@@ -36,8 +36,8 @@ class Sidebar extends React.Component {
 		super(props);
 		this.state = { rounds: [] };
 		this.activeRoute.bind(this);
-		this.getRound = this.getRound.bind(this);
-		this.componentDidMount = this.componentDidMount.bind(this);
+		this.getRound = this.getRound.bind(this); 
+		
 	}
 	// verifies if routeName is the one active (in browser input)
 	activeRoute(routeName) {
@@ -161,7 +161,12 @@ class Sidebar extends React.Component {
 								<div style={{ backgroundColor: '#235791' }}>
 									<li key={key}>
 										<NavLink
-											to={'/admin/corrida1'}
+											to={{
+												pathname: '/admin/corrida1/',
+												aboutProps: {
+													roundId: item.id
+												}
+											}}
 											className="nav-link"
 											activeClassName="active"
 											onClick={this.props.toggleSidebar}
