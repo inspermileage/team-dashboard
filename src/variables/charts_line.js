@@ -26,22 +26,26 @@ class LineChart extends React.Component {
             display: false
           },
           
-        //   scales: {
-        //     xAxes: [
-        //       {
-        //         ticks: {
-        //             min: 0
-        //           }
-        //       }
-        //     ],
-        //     yAxes: [
-        //       {
-        //         ticks: {
-        //           min: 0
-        //         }
-        //       }
-        //     ]
-        //   }
+          scales: {
+            xAxes: [
+              {
+                scaleLabel: {
+                  display: true,
+                  labelString: this.props.medidax
+                }
+                
+              }
+            ],
+            yAxes: [
+              {
+                scaleLabel: {
+                  display: true,
+                  labelString: this.props.mediday
+                }
+               
+              }
+            ]
+          }
         },
         data: {
           labels: this.props.label,
