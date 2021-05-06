@@ -106,7 +106,7 @@ class Admin extends React.Component {
 						routes={routes}
 						bgColor={this.state.backgroundColor}
 						logo={{
-							outterLink: 'https://inspermileage.netlify.app/',
+							outterLink: 'https://inspermileage.vercel.app/',
 							text: 'INSPER Mileage',
 							imgSrc: logo
 						}}
