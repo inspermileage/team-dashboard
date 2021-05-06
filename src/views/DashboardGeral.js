@@ -97,7 +97,8 @@ class Dashboard extends React.Component {
 				})
 				this.setState({
 					telemetry: response.data,
-					race_time: toMinutes(this.state.creation_time_timestamp[this.state.creation_time_timestamp.length-1] - this.state.creation_time_timestamp[0])
+					race_time: toMinutes(this.state.creation_time_timestamp[this.state.creation_time_timestamp.length-1] - this.state.creation_time_timestamp[0]),
+					grafico: this.state.energy_cons,
 				});
 				console.log("aaaaaaaaa", this.state.creation_time_timestamp[this.state.creation_time_timestamp.length-1] - this.state.creation_time_timestamp[0]);
 				console.log(this.state.race_time);	
@@ -171,8 +172,8 @@ class Dashboard extends React.Component {
 										<LineChart
 											data={this.state.grafico}
 											label={tempo(this.state.creation_time_timestamp)}
-											// title="Gabi"
-											medidax = "s"
+											
+											medidax = "Tempo"
 											mediday ={(JSON.stringify(this.state.grafico)==JSON.stringify(this.state.battery)) ? "%" : "Kwh"}
 											color="#70CAD1"
 										/>
@@ -182,19 +183,17 @@ class Dashboard extends React.Component {
 						</Col>
 					</Row>
 					<Row>
-
-						<Col lg="4">
+						
+						<Col lg="3">
 							<Card className="card-chart">
 								<CardHeader>
 									<h5 className="card-category">Tempo de Prova</h5>
 									<CardTitle tag="h3">
-										<i className="tim-icons icon-send text-success" /> {this.state.race_time}
+										<i className="tim-icons  icon-time-alarm text-success" /> {this.state.race_time}
 									</CardTitle>
 								</CardHeader>
 								<CardBody>
-									{/* <div className="chart-area">
-										<Line data={chartExample4.data} options={chartExample4.options} />
-									</div> */}
+									
 								</CardBody>
 							</Card>
 							
@@ -202,13 +201,10 @@ class Dashboard extends React.Component {
 								<CardHeader>
 									<h5 className="card-category">Bateria</h5>
 									<CardTitle tag="h3">
-										<i className="tim-icons icon-send text-success" /> {this.state.battery[this.state.battery.length-1]} %
+										<i className="tim-icons icon-bulb-63 text-success" /> {this.state.battery[this.state.battery.length-1]} %
 									</CardTitle>
 								</CardHeader>
 								<CardBody>
-									{/* <div className="chart-area">
-										<Line data={chartExample4.data} options={chartExample4.options} />
-									</div> */}
 								</CardBody>
 							</Card>
 
@@ -216,13 +212,11 @@ class Dashboard extends React.Component {
 								<CardHeader>
 									<h5 className="card-category">Velocidade Média</h5>
 									<CardTitle tag="h3">
-										<i className="tim-icons icon-send text-success" /> {this.state.avg_speed[this.state.avg_speed.length-1]} km/h
+										<i className="tim-icons icon-user-run text-success" /> {this.state.avg_speed[this.state.avg_speed.length-1]} km/h
 									</CardTitle>
 								</CardHeader>
 								<CardBody>
-									{/* <div className="chart-area">
-										<Line data={chartExample4.data} options={chartExample4.options} />
-									</div> */}
+									
 								</CardBody>
 							</Card>
 
@@ -230,17 +224,15 @@ class Dashboard extends React.Component {
 								<CardHeader>
 									<h5 className="card-category">Distância Percorrida</h5>
 									<CardTitle tag="h3">
-										<i className="tim-icons icon-send text-success" /> {this.state.distance[this.state.distance.length-1]} m
+										<i className="tim-icons icon-watch-time text-success" /> {this.state.distance[this.state.distance.length-1]} m
 									</CardTitle>
 								</CardHeader>
 								<CardBody>
-									{/* <div className="chart-area">
-										<Line data={chartExample4.data} options={chartExample4.options} />
-									</div> */}
+									
 								</CardBody>
 							</Card>
 						</Col>
-						<Col lg="8">
+						<Col lg="9">
 						<Card className="card-chart">
 								<CardHeader>
 									<h5 className="card-category">Velocidade instântanea x Tempo</h5>
@@ -251,8 +243,8 @@ class Dashboard extends React.Component {
 									<LineChart
 										data={this.state.speed}
 										label={tempo(this.state.creation_time_timestamp)}
-										// title="Gabi"
-										medidax = "s"
+
+										medidax = "Tempo"
 										mediday = "km/h"
 										color="#70CAD1"
 									/>
@@ -272,7 +264,7 @@ class Dashboard extends React.Component {
 									<LineChart
 										data={this.state.engine_temp}
 										label={this.state.distance}
-										// title="Gabi"
+										
 										medidax = "m"
 										mediday = "ºC"
 										color="#70CAD1"
@@ -292,8 +284,8 @@ class Dashboard extends React.Component {
 									<LineChart
 										data={this.state.rpm}
 										label={tempo(this.state.creation_time_timestamp)}
-										// title="Gabi"
-										medidax = "s"
+										
+										medidax = "Tempo"
 										mediday = "RPM"
 										color="#70CAD1"
 									/>
