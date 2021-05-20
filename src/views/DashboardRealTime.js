@@ -41,6 +41,7 @@ class DashboardRealTime extends React.Component {
     this.getLastRound = this.getLastRound.bind(this);
     
 		this.state = {
+      contador: 0,
       last_round_id:-1,
 			bigChartData: 'data1',
 			telemetry:[],
@@ -102,9 +103,10 @@ class DashboardRealTime extends React.Component {
     try {setInterval(async()=>{
       if (this.state.last_round_id != -1 && this.state.checked){
         this.getTelemetrybyRoundId();
+        console.log(this.state.contador)
       }
       else{
-        console.log("não está ao vivo");
+        console.log("Not Real Time");
       }
       
     }, 1000);
@@ -119,9 +121,12 @@ class DashboardRealTime extends React.Component {
 			.then((response) => {
 				
         var last_term = this.state.creation_time[this.state.creation_time.length -1];
+        this.setState({
+          contador: this.state.contador+1
+        })
 				response.data.map((prop, key) => {
-					var timestamp = toTimestamp(prop.creation_time);
           if (prop.creation_time > last_term || this.state.creation_time.length ==0){
+            var timestamp = toTimestamp(prop.creation_time);
             this.setState({
               speed: [...this.state.speed,prop.speed],
               telemetry_id: [...this.state.telemetry_id,prop.id],
@@ -159,7 +164,7 @@ class DashboardRealTime extends React.Component {
 			<>
 				<div className="content">
         <label>
-        <span>Switch with default style</span>
+        <span>Real time</span>
         <Switch onChange={this.handleChange} checked={this.state.checked} />
       </label>
 					<Row>
