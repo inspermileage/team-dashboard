@@ -34,9 +34,12 @@ var ps;
 class Sidebar extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { rounds: [] };
+		this.state = { 
+			rounds: [],
+			last_round:0  };
 		this.activeRoute.bind(this);
 		this.getRound = this.getRound.bind(this); 
+
 		
 	}
 	// verifies if routeName is the one active (in browser input)
@@ -45,6 +48,7 @@ class Sidebar extends React.Component {
 	}
 	componentDidMount() {
 		this.getRound();
+		
 		// console.log(oi);
 
 		if (navigator.platform.indexOf('Win') > -1) {
@@ -72,12 +76,7 @@ class Sidebar extends React.Component {
 				this.setState({
 					rounds: response.data
 				});
-				//console.log("print da data")
-				// response.data.map((data,key)=> {
-				//   console.log(data.name);
-				// });
-				// console.log(response.data);
-				// return response.data;
+
 				return;
 			})
 			.catch(function(error) {
@@ -85,6 +84,8 @@ class Sidebar extends React.Component {
 				console.log('Deu errado no getRoundInfo :(');
 			});
 	};
+
+	
 
 	render() {
 		const { bgColor, routes, rtlActive, logo } = this.props;
@@ -115,7 +116,6 @@ class Sidebar extends React.Component {
 					</a>
 				);
 			} else {
-				// #{this.props.toggleSidebar}
 				logoImg = (
 					<Link to={logo.innerLink} className="simple-text logo-mini" onClick={this.props.toggleSidebar}>
 						<div className="logo-img">
@@ -158,7 +158,7 @@ class Sidebar extends React.Component {
 						})}
 						{this.state.rounds.map((item, key) => {
 							return (
-								<div style={{ backgroundColor: '#235791' }}>
+								
 									<li key={key}>
 										<NavLink
 											to={{
@@ -175,7 +175,6 @@ class Sidebar extends React.Component {
 											<p>{item.name ? item.name : 'nao tem'}</p>
 										</NavLink>
 									</li>
-								</div>
 							);
 						})}
 					</Nav>
