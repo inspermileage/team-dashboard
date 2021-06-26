@@ -18,6 +18,9 @@
 import axios from 'axios';
 import { tempo, toMinutes } from "function/tominutes.js";
 import toTimestamp from "function/totimestamp.js";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { Icon } from "leaflet";
+//import * as parkData from "./data/skateboard-parks.json";
 import React from 'react';
 // reactstrap components
 import {
@@ -26,11 +29,12 @@ import {
 	Card,
 	CardBody, CardHeader,
 	CardTitle,
-	Col, Row
+	Col, Row, Center,
 } from 'reactstrap';
 import LineChart from 'variables/charts_line.js';
-
-
+import "./leaflet.css";
+import Container from 'reactstrap/lib/Container';
+import * as teste from "./teste.json";
 
 class Dashboard extends React.Component {
 	constructor(props) {
@@ -53,7 +57,11 @@ class Dashboard extends React.Component {
 			creation_time_timestamp:[],
 			race_time: 0,
 			grafico:[],
+			latitude: [],
+			longitude: [],
 			eixoy:'',
+			activePark: null,
+			setActivePark: null,
 		};
 		this.componentDidMount = this.componentDidMount.bind(this);
 
@@ -90,8 +98,8 @@ class Dashboard extends React.Component {
 						battery:[...this.state.battery, prop.battery],
 						avg_speed: [...this.state.avg_speed, prop.avg_speed],
 						creation_time_timestamp: [...this.state.creation_time_timestamp,timestamp],
-						
-						
+						latitude: [...this.state.latitude, prop.latitude],
+						longitude: [...this.state.longitude, prop.longitude],
 						
 					})
 				})
@@ -100,8 +108,10 @@ class Dashboard extends React.Component {
 					race_time: toMinutes(this.state.creation_time_timestamp[this.state.creation_time_timestamp.length-1] - this.state.creation_time_timestamp[0]),
 					grafico: this.state.energy_cons,
 				});
-				console.log("aaaaaaaaa", this.state.creation_time_timestamp[this.state.creation_time_timestamp.length-1] - this.state.creation_time_timestamp[0]);
-				console.log(this.state.race_time);	
+				console.log("Latitudeeeeeeeeeeeeeeeeee");
+				console.log(this.state.latitude);
+				console.log("Longitudeeeeeee");
+				console.log(this.state.longitude);	
 				return;
 			})
 			.catch(function(error) {
@@ -114,6 +124,15 @@ class Dashboard extends React.Component {
 		return (
 			<>
 				<div className="content">
+							<MapContainer center={[-23.599034, -46.676020]} zoom={20}>
+								<TileLayer
+									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+									attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+								/>
+								
+      
+							</MapContainer>
+						
 					<Row>
 						<Col xs="12">
 							<Card className="card-chart">
