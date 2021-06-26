@@ -18,9 +18,7 @@
 import axios from 'axios';
 import { tempo, toMinutes } from "function/tominutes.js";
 import toTimestamp from "function/totimestamp.js";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { Icon } from "leaflet";
-//import * as parkData from "./data/skateboard-parks.json";
+import { MapContainer, Marker, Popup, TileLayer,Rectangle,Polyline,useMap,MapConsumer } from "react-leaflet";
 import React from 'react';
 // reactstrap components
 import {
@@ -33,8 +31,7 @@ import {
 } from 'reactstrap';
 import LineChart from 'variables/charts_line.js';
 import "./leaflet.css";
-import Container from 'reactstrap/lib/Container';
-import * as teste from "./teste.json";
+
 
 class Dashboard extends React.Component {
 	constructor(props) {
@@ -59,12 +56,17 @@ class Dashboard extends React.Component {
 			grafico:[],
 			latitude: [],
 			longitude: [],
+			coordenadas: [],
 			eixoy:'',
 			activePark: null,
 			setActivePark: null,
+			latitude_inicial: 0,
+			longitude_inicial:0
 		};
+		
 		this.componentDidMount = this.componentDidMount.bind(this);
-
+		// this.MyComponent = this.MyComponent.bind(this);
+		this.MyMapComponent = this.MyMapComponent.bind(this);
 		
 	}
 	setBgChartData = (name) => {
@@ -78,7 +80,7 @@ class Dashboard extends React.Component {
 
 	componentDidMount() {
 		this.getTelemetrybyRoundId();
-		// console.log(oi);	
+		//this.MyMapComponent();
 	}
 	getTelemetrybyRoundId = () => {
 		axios
@@ -87,6 +89,7 @@ class Dashboard extends React.Component {
 				console.log(response.data);
 				response.data.map((prop, key) => {
 					var timestamp = toTimestamp(prop.creation_time);
+					const lista_coordenada = [prop.latitude,prop.longitude];
 					this.setState({
 						speed: [...this.state.speed,prop.speed],
 						telemetry_id: [...this.state.telemetry_id,prop.id],
@@ -100,7 +103,9 @@ class Dashboard extends React.Component {
 						creation_time_timestamp: [...this.state.creation_time_timestamp,timestamp],
 						latitude: [...this.state.latitude, prop.latitude],
 						longitude: [...this.state.longitude, prop.longitude],
-						
+						coordenadas: [...this.state.coordenadas, lista_coordenada],
+						latitude_inicial : this.state.latitude[0],
+						longitude_inicial : this.state.longitude[0],
 					})
 				})
 				this.setState({
@@ -111,7 +116,9 @@ class Dashboard extends React.Component {
 				console.log("Latitudeeeeeeeeeeeeeeeeee");
 				console.log(this.state.latitude);
 				console.log("Longitudeeeeeee");
-				console.log(this.state.longitude);	
+				console.log(this.state.longitude);
+				console.log("coordenadas");
+				console.log(this.state.coordenadas);
 				return;
 			})
 			.catch(function(error) {
@@ -119,19 +126,43 @@ class Dashboard extends React.Component {
 				console.log('Deu errado no getRoundInfo :(');
 			});
 	};
+	
+	  
+	
+	
+	MyMapComponent() {
+		var center = [51.505, -0.09];
+		var center_insper = [-23.599034, -46.676020];
+		var coords_inicial = this.state.coordenadas[0];
+		console.log("coords inicial");
+		console.log(coords_inicial);
+		console.log(this.state.latitude_inicial,this.state.longitude_inicial);
+		return (
+			<MapContainer center={center_insper} zoom={20}>
+				
+			<TileLayer
+				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+				attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+			/>
+			 <Polyline pathOptions={{color:'orange'}} positions={this.state.coordenadas} />
+			 {/* <MapConsumer>
+        {(map) => {
+          //console.log('map center:', map.getCenter())
+		  //map.setView([this.state.latitude_inicial,this.state.longitude_inicial]);
+		  map.panTo([this.state.latitude_inicial,this.state.longitude_inicial]);
+          return null
+        }}
+      </MapConsumer> */}
+		</MapContainer>
+		)
+	  }	  
 
 	render() {
+		
 		return (
 			<>
 				<div className="content">
-							<MapContainer center={[-23.599034, -46.676020]} zoom={20}>
-								<TileLayer
-									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-									attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-								/>
-								
-      
-							</MapContainer>
+							{this.MyMapComponent()}
 						
 					<Row>
 						<Col xs="12">
