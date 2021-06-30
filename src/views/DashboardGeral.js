@@ -137,6 +137,7 @@ class Dashboard extends React.Component {
 		console.log("coords inicial");
 		console.log(coords_inicial);
 		console.log(this.state.latitude_inicial,this.state.longitude_inicial);
+		
 		return (
 			<MapContainer center={center_insper} zoom={20}>
 				
@@ -145,17 +146,30 @@ class Dashboard extends React.Component {
 				attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 			/>
 			 <Polyline pathOptions={{color:'orange'}} positions={this.state.coordenadas} />
-			 {/* <MapConsumer>
+			 {this.state.latitude_inicial != 0 && this.state.longitude_inicial != 0 ?(map)=> map.flyTo(this.state.coordenadas[-1], map.getZoom()) : <div> </div>}
+	
+		</MapContainer>
+		)
+
+		// 		 <MapConsumer>
+    //     {(map) => {
+    //       //console.log('map center:', map.getCenter())
+	// 	  map.setView([0,0]);
+	// 	  //map.panTo([this.state.latitude_inicial,this.state.longitude_inicial]);
+          
+    //     }}
+    //   </MapConsumer> : <div>CHATO</div> }
+			 {/* /* <MapConsumer>
         {(map) => {
           //console.log('map center:', map.getCenter())
 		  //map.setView([this.state.latitude_inicial,this.state.longitude_inicial]);
 		  map.panTo([this.state.latitude_inicial,this.state.longitude_inicial]);
           return null
         }}
-      </MapConsumer> */}
-		</MapContainer>
-		)
-	  }	  
+      </MapConsumer> */ }
+		
+		
+	  }
 
 	render() {
 		

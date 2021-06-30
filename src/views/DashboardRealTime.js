@@ -171,13 +171,18 @@ class DashboardRealTime extends React.Component {
 	MyMapComponent() {
 		var center = [51.505, -0.09];
 		var center_insper = [-23.599034, -46.676020];
+		var inicio = true;
+		
 		var coords_inicial = this.state.coordenadas[0];
+			
 		console.log("coords inicial");
 		console.log(coords_inicial);
 		console.log(this.state.latitude_inicial,this.state.longitude_inicial);
-		if(this.state.latitude_inicial != 0 && this.state.longitude_inicial != 0){
+			
 			return (
-				<MapContainer center={center_insper} zoom={20}>
+				
+				 <MapContainer center={center_insper} zoom={20}> 
+				
 					
 				<TileLayer
 					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -193,10 +198,9 @@ class DashboardRealTime extends React.Component {
 			}}
 		  </MapConsumer> */}
 			</MapContainer>
+			
 			)
-		}else{
-			return
-		}
+		
 		
 	  }	 
 
@@ -204,12 +208,14 @@ class DashboardRealTime extends React.Component {
 		return (
 			<>
 				<div className="content">
-					{this.state.checked ? this.MyMapComponent(): <div> </div> }
+					
 				
         <label>
         <span>Real time</span>
         <Switch onChange={this.handleChange} checked={this.state.checked} />
       </label>
+	  
+	  {this.state.checked ? this.MyMapComponent(): <div>  </div> }
 					<Row>
 						<Col xs="12">
 							<Card className="card-chart">
