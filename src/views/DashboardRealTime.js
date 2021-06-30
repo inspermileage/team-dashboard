@@ -30,19 +30,19 @@ import {
 } from 'reactstrap';
 import LineChart from 'variables/charts_line.js';
 import Switch from "react-switch";
+import { MapContainer, Marker, Popup, TileLayer,Rectangle,Polyline,useMap,MapConsumer } from "react-leaflet";
 
 
 class DashboardRealTime extends React.Component {
 	constructor(props) {
 		super(props);
 		console.log(props.location.aboutProps);
-    
+		
 		this.getTelemetrybyRoundId = this.getTelemetrybyRoundId.bind(this);
     this.getLastRound = this.getLastRound.bind(this);
-    
 		this.state = {
-      contador: 0,
-      last_round_id:-1,
+      		contador: 0,
+      		last_round_id:-1,
 			bigChartData: 'data1',
 			telemetry:[],
 			telemetry_id: [],
@@ -58,13 +58,17 @@ class DashboardRealTime extends React.Component {
 			race_time: 0,
 			grafico:[],
 			eixoy:'',
-      checked : false
+      		checked : false,
+	  		latitude: [],
+			longitude: [],
+			coordenadas: []
 		};
     this.handleChange = this.handleChange.bind(this);
 		this.componentDidMount = this.componentDidMount.bind(this);
 
 		
 	}
+	
 
   handleChange(checked) {
     this.setState({ checked });
@@ -112,7 +116,7 @@ class DashboardRealTime extends React.Component {
     }, 1000);
     } catch(e){
     console.log(e);
-    }
+    } 
 			
 	}
 	getTelemetrybyRoundId = () => {
@@ -127,6 +131,7 @@ class DashboardRealTime extends React.Component {
 				response.data.map((prop, key) => {
           if (prop.creation_time > last_term || this.state.creation_time.length ==0){
             var timestamp = toTimestamp(prop.creation_time);
+			const lista_coordenada = [prop.latitude,prop.longitude];
             this.setState({
               speed: [...this.state.speed,prop.speed],
               telemetry_id: [...this.state.telemetry_id,prop.id],
@@ -138,7 +143,11 @@ class DashboardRealTime extends React.Component {
               battery:[...this.state.battery, prop.battery],
               avg_speed: [...this.state.avg_speed, prop.avg_speed],
               creation_time_timestamp: [...this.state.creation_time_timestamp,timestamp],
-              
+              latitude: [...this.state.latitude, prop.latitude],
+			  longitude: [...this.state.longitude, prop.longitude],
+			  coordenadas: [...this.state.coordenadas, lista_coordenada],
+			  latitude_inicial : this.state.latitude[0],
+			  longitude_inicial : this.state.longitude[0],
               
               
             })
@@ -159,10 +168,44 @@ class DashboardRealTime extends React.Component {
 			});
 	};
 
+	MyMapComponent() {
+		var center = [51.505, -0.09];
+		var center_insper = [-23.599034, -46.676020];
+		var coords_inicial = this.state.coordenadas[0];
+		console.log("coords inicial");
+		console.log(coords_inicial);
+		console.log(this.state.latitude_inicial,this.state.longitude_inicial);
+		if(this.state.latitude_inicial != 0 && this.state.longitude_inicial != 0){
+			return (
+				<MapContainer center={center_insper} zoom={20}>
+					
+				<TileLayer
+					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+					attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+				/>
+				 <Polyline pathOptions={{color:'orange'}} positions={this.state.coordenadas} />
+				 {/* <MapConsumer>
+			{(map) => {
+			  //console.log('map center:', map.getCenter())
+			  //map.setView([this.state.latitude_inicial,this.state.longitude_inicial]);
+			  map.panTo([this.state.latitude_inicial,this.state.longitude_inicial]);
+			  return null
+			}}
+		  </MapConsumer> */}
+			</MapContainer>
+			)
+		}else{
+			return
+		}
+		
+	  }	 
+
 	render() {
 		return (
 			<>
 				<div className="content">
+					{this.state.checked ? this.MyMapComponent(): <div> </div> }
+				
         <label>
         <span>Real time</span>
         <Switch onChange={this.handleChange} checked={this.state.checked} />
